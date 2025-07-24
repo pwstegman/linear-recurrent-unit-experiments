@@ -179,7 +179,8 @@ class LRU(nnx.Module):
 
         return Y
 
-
+# Precomputes the transformation on the input X in one large matrix operation before the
+# recurrent scan.
 class LRUFullParallel(nnx.Module):
     def __init__(
         self,
@@ -329,7 +330,7 @@ class LRUFullParallel(nnx.Module):
 
         return Y
 
-
+# Performs the recurrent option in both directions, then concatenates the outputs.
 class BiLRU(nnx.Module):
     def __init__(
         self, lru_forward: LRU | LRUFullParallel, lru_backward: LRU | LRUFullParallel
@@ -342,7 +343,7 @@ class BiLRU(nnx.Module):
             (self.lru_forward(X), self.lru_backward(X, reverse=False)), axis=2
         )
 
-
+# Move the diagonal lambda matrix calculation outside the recurrent operation.
 class LRUOptimized(nnx.Module):
     def __init__(
         self,
@@ -515,7 +516,7 @@ class LRUOptimized(nnx.Module):
 
         return Y, h_N
 
-
+# Performs calculations in half precision and stores weights in full precision.
 class LRUOptimizedHalf(nnx.Module):
     def __init__(
         self,
